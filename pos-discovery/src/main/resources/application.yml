@@ -1,16 +1,15 @@
 server:
   port: 8761
 
+spring:
+  application:
+    name: pos-discovery
+
 eureka:
   instance:
     hostname: localhost
-  # standalone mode
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
-
-spring:
-  application:
-    name: eureka-server
+      defaultZone: https://${eureka.instance.hostname}:${server.port}/eureka
