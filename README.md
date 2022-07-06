@@ -1,5 +1,13 @@
 # aw08
 
+### REPORT 报告
+
+使用`Spring Integration`可以传输更多结构的、更详细的数据，而不必通过一般网络请求传输，一方面便于不同服务程序之间的交互，另一方面还可以由其优秀的数据处理能力提供更多样化的服务接入。
+
+
+
+### Original README.md
+
 Run the project with `mvn spring-boot:run` and send request to `http://localhost:8080/check`. You should see an reponses in json format like the following.
 
 ```json
