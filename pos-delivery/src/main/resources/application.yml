@@ -1,0 +1,6 @@
+server:
+  port: 18005
+
+spring:
+  application:
+    name: delivery-service

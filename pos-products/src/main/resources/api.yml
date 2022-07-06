@@ -1,0 +1,397 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Products
+  license:
+    name: MIT
+paths:
+  /products:
+    get:
+      summary: List all products
+      operationId: listProducts
+      tags:
+        - products
+      responses:
+        '200':
+          description: A paged array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /products/{productId}:
+    get:
+      summary: Info for a specific product
+      operationId: showProductById
+      tags:
+        - product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts:
+    get:
+      summary: Get the current cart
+      operationId: listCart
+      tags:
+        - carts
+      responses:
+        '200':
+          description: A page array of products in cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts/{productId}/{quantity}:
+    get:
+      summary: Add a product to the cart
+      operationId: addProduct
+      tags:
+        - cartAdd
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          description: The quantity of the product to add
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /carts/{productId}:
+    get:
+      summary: Get the quantity of a product in the cart
+      operationId: getProductQuantity
+      tags:
+        - cartGet
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /cartsdel/{productId}/{quantity}:
+    get:
+      summary: Delete specified quantity of a product in the cart
+      operationId: deleteProduct
+      tags:
+        - cartDel
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          description: The quantity of the product to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /counter:
+    get:
+      summary: Settle the cart
+      operationId: counterSettlement
+      tags:
+        - counter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CounterProducts"
+      responses:
+        '200':
+          description: The total price
+          content:
+            application/json:
+              schema:
+                type: number
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /deliveries:
+    get:
+      summary: List all delivery orders
+      operationId: listDeliveryOrder
+      tags:
+        - deliveries
+      responses:
+        '200':
+          description: A page list of delivery orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryOrders"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /delivery/{orderId}:
+    get:
+      summary: Get a delivery order
+      operationId: getDeliveryOrder
+      tags:
+        - delivery
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The id of the order to search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The delivery order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryOrder"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders:
+    get:
+      summary: List orders
+      operationId: listOrder
+      tags:
+        - orders
+      responses:
+        '200':
+          description: A page list of orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Orders"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /order_create:
+    get:
+      summary: Create an order
+      operationId: createOrder
+      tags:
+        - orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CartProduct"
+      responses:
+        '200':
+          description: New order number
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /order_items/{orderId}:
+    get:
+      summary: View a order
+      operationId: listOrderItems
+      tags:
+        - order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The id of the order to search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+    CartProduct:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+    Carts:
+      type: array
+      items:
+        $ref: "#/components/schemas/CartProduct"
+    CounterProduct:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+        price:
+          type: number
+    CounterProducts:
+      type: array
+      items:
+        $ref: "#/components/schemas/CounterProduct"
+    DeliveryOrder:
+      type: object
+      required:
+        - orderNo
+      properties:
+        orderNo:
+          type: integer
+          format: int32
+        deliveryStage:
+          type: integer
+          format: int32
+    DeliveryOrders:
+      type: array
+      items:
+        $ref: "#/components/schemas/DeliveryOrder"
+    Order:
+      type: object
+      required:
+        - orderNo
+      properties:
+        orderNo:
+          type: integer
+          format: int32
+        orderItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartProduct"
+    Orders:
+      type: array
+      items:
+        $ref: "#/components/schemas/Order"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
