@@ -3,12 +3,8 @@ package com.micropos.products.service;
 import com.micropos.products.model.Product;
 import com.micropos.products.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +19,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> products() {
         return productRepository.allProducts();
+    }
+
+    @Override
+    public List<Product> getProducts(String category, Integer page) {
+        return productRepository.getProducts(category, page);
     }
 
     @Override

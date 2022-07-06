@@ -1,14 +1,30 @@
 package com.micropos.carts.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cart {
+@NoArgsConstructor
+public class Cart implements Serializable {
 
-    private List<Item> items = new ArrayList<>();
+    private int id;
+    private List<Item> items;
 
-    public boolean addItem(Item item) {
-        return items.add(item);
+    public Cart(int id, List<Item> items) {
+        this.id = id;
+        this.items = items;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Item> getItems() {

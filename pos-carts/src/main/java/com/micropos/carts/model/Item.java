@@ -1,43 +1,46 @@
 package com.micropos.carts.model;
 
-import java.util.Objects;
+import com.micropos.carts.model.Product;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 
-public class Item {
-    private String productId;
-    private int quantity;
+@NoArgsConstructor
+public class Item implements Serializable {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(productId, quantity);
+    private int id;
+    private int amount;
+    private Product product;
+
+    public Item(int id, int amount, Product product) {
+        this.id = id;
+        this.amount = amount;
+        this.product = product;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return quantity == item.quantity && Objects.equals(productId, item.productId);
+    public int getId() {
+        return id;
     }
 
-    public Item(String productId, int quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getProductId() {
-        return productId;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

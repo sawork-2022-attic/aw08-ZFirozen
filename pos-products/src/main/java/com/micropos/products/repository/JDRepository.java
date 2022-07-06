@@ -6,8 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -19,25 +17,32 @@ import java.util.List;
 public class JDRepository implements ProductRepository {
     private List<Product> products = null;
 
-    private final CircuitBreaker readingListCircuitBreaker;
-
-    public JDRepository(CircuitBreakerFactory circuitBreakerFactory) {
-        this.readingListCircuitBreaker = circuitBreakerFactory.create("products");
-    }
-
-    private List<Product> defaultProducts() {
-        List<Product> defaultResult = new ArrayList<Product>();
-        defaultResult.add(new Product("13284888", "Java从入门到精通（第6版）（软件开发视频大讲堂） Java入门经典", 75.8, "https://img13.360buyimg.com/n1/s200x200_jfs/t1/186038/9/7947/120952/60bdd993E41eea7e2/48ab930455d7381b.jpg"));
-        return defaultResult;
+    public JDRepository() {
+//        try {
+//            if (products == null)
+//                products = parseJD("Java");
+//        } catch (IOException e) {
+//            products = new ArrayList<>();
+//        }
+        Product sampleProduct = new Product(
+                "1", "Java编程思想", 20.1,
+                "https://www.linuxidc.com/upload/2014_08/140811101915661.jpg");
+        products = new ArrayList<>();
+        products.add(sampleProduct);
     }
 
     @Override
+    @Cacheable(value = "products")
     public List<Product> allProducts() {
-        if (products == null)
-            products = readingListCircuitBreaker.run(
-                () -> parseJD("Java"), throwable -> defaultProducts()
-            );
         return products;
+    }
+
+    @Override
+    public List<Product> getProducts(String category, Integer page) {
+        if (page > 5)
+            page = page % 6;
+        int step = products.size() / 6;
+        return products.subList(page * step, Math.min(products.size(), page * step + Math.max(1, step)));
     }
 
     @Override
@@ -50,15 +55,9 @@ public class JDRepository implements ProductRepository {
         return null;
     }
 
-    @Cacheable(value = "parseJD", key = "#keyword")
-    public static List<Product> parseJD(String keyword) {
+    public static List<Product> parseJD(String keyword) throws IOException {
         String url = "https://search.jd.com/Search?keyword=" + keyword;
-        Document document = null;
-        try {
-            document = Jsoup.parse(new URL(url), 10000);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to fetch");
-        }
+        Document document = Jsoup.parse(new URL(url), 10000);
         Element element = document.getElementById("J_goodsList");
         Elements elements = element.getElementsByTag("li");
         List<Product> list = new ArrayList<>();

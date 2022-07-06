@@ -1,6 +1,6 @@
 server:
-  port: 18003
+  port: 0
 
 spring:
   application:
-    name: orders-service
+    name: pos-orders
